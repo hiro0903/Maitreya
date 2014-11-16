@@ -20,12 +20,16 @@ var data = [
 ];
 
 var cards = React.createClass({
-  var card_list = this.props.data.map(function(val) {
-    return (
-      <Card title={val.title} contents={val.contents} />
-    );
-  });
+  
   render: function() {
+
+    var card_list = this.props.data.map(function(val) {
+      return (
+        <Card title={val.title} contents={val.contents} />
+      );
+    });
+
+    
     return (
       <card_list data={this.props.data} />
     );
