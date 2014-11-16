@@ -1,0 +1,17 @@
+.card { width: 100px; height: 160px; position: relative; float: left; marin: 5px; transition: all 0.2s ease-out; }
+.card .face { position: absolute; top: 0; left: 0; right: 0; bottom: 0; transition: transform 0.2s ease-in 0.1s; backface-visibility: hidden; }
+
+.card .front {  }
+.card .front .border {  fill: #FFF; stroke: #006e54; stoke-width:1px; }
+.card .front .bar { fill: #38b48b; }
+.card .front .title { font: 18px 標楷體; fill: #FFF; }
+.card .front .quote { font: 14px 標楷體; fill: #1e50a2; }
+
+.card .back  { transform: rotateY(180deg); }
+.card .back .border {  fill: #38b48b; stroke: #006e54; stoke-width:10px; }
+
+.card:hover { -webkit-filter: drop-shadow(0px 0px 5px #999); transform: scale(1.1); }
+.card:hover .front { transform: rotateY(180deg); }
+.card:hover .back  { transform: rotateY(360deg); }
+
+
