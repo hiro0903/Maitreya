@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>2015 少年禮節營</title>
+    <script src="libs/jquery-2.1.3.min.js"></script>
+    <script src="libs/react-with-addons.js"></script>
+    <script src="libs/JSXTransformer.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="prelude">
+    <video src="video/video1.mp4"></video>
+</div>
+
+<div id="game-container"></div>
+
+
+
+<script type="text/jsx">
+(function(){
+    Number.prototype.pad = function(n) {
+        return (new Array( n + 1 ).join('0')  + this ).slice((n || 2) * -1);
+    };
+
+    window.App = {
+        comps : {},
+        insts : {}
+    }
+
+    var app = window.App;
+
+    app.comps.Counter = React.createClass({
+
+        _updateTimeLeft : function () { 
+            var now = Date.now(),
+                last_trigger = this.lastTriggerTime || now;
+
+            this.lastTriggerTime = now;
+            return this.setState({ timeLeft : this.state.timeLeft - (now - last_trigger) });
+        },
+
+        _timestampToString(timeDifference) {
+            var t = timeDifference, hr, min, sec, mm,
+                timeShow = '00:00:00.000';
+
+            if (t > 0) {
+                mm = (t % 1000).pad(3);
+                t = ~~(t / 1000);
+
+                sec = (t % 60).pad(2);
+                t = ~~(t / 60);
+
+                min = (t % 60).pad(2);
+                t = ~~(t / 60);
+
+                hr = (t % 24).pad(2);
+
+                timeShow = `${hr}:${min}:${sec}.${mm}`;
+            }
+
+            return timeShow;
+        },
+
+        zoomOut : function() {
+            if (this.renderNext) window.clearTimeout(this.renderNext);
+            this.setState({ size : 2 });
+        },
+
+        toggleTimer : function() {
+            this.lastTriggerTime = Date.now();
+            return this.setState({ 
+                run : !this.state.run,
+            });
+        },
+
+        getInitialState: function() {
+            return { 
+                run : false,
+                size: 1,
+                timeLeft : 2 * 60 * 60 * 1000  //2hr
+            };
+        },
+
+        render: function(){
+            var timeLeft = this.state.timeLeft,
+                timeShow = this._timestampToString(timeLeft);
+
+            if (!!this.state.run) this.renderNext = window.setTimeout(this._updateTimeLeft,100);
+
+            return (
+                <div className={"counter size-" + this.state.size + (this.state.run ? ' running' : '') } onClick={this.toggleTimer} onDoubleClick={this.zoomOut}>
+                    <div className="timer">{timeShow}</div>
+                    <div className="pause"></div>
+                </div>
+            );
+        }
+    });
+
+    app.comps.Team = React.createClass({
+        propTypes: {
+            teamName   : React.PropTypes.string,
+            teamNumber : React.PropTypes.number
+        }, //驗證資料
+        mixins : [],
+
+        getInitialState: function() {
+            return {
+                size  : 1,
+                stage : 0,
+            };
+        },
+        getDefaultProps: function() {},
+
+        componentWillMount : function() {},
+        componentWillReceiveProps: function() {},
+        componentWillUnmount : function() {},
+
+        focus : function() { this.setState( { size : 2 } ); },
+
+        render : function() {
+            return (
+                <div className={`team team${this.props.teamNumber} size-${this.state.size}`}>
+                    <div className="title">{`第${this.props.teamNumber}隊 - ${this.props.teamName}`}</div>
+                </div>
+            );
+        }
+    });
+
+}());
+
+jQuery(function($){
+    var app = window.App,
+        TimeCounter = app.comps.Counter,
+        Team = app.comps.Team,
+        ins = app.insts,
+        videoContainer = document.getElementById('prelude'),
+        video = videoContainer.getElementsByTagName('video')[0],
+        teams = ['小虎隊', '草蜢隊', '五月天', '脫拉庫', '五五六六', '咻比嘟哇', 'Ｓ.Ｈ.Ｅ', '八三么'], 
+        Core;
+
+    video.addEventListener('ended', function(e) { return videoContainer.classList.add('video-ended'); });
+    videoContainer.addEventListener('click', function(e) { if (!this.classList.contains('end')) video.play(); });
+    videoContainer.addEventListener('animationend', function(e) { ins.app.run(); });
+
+    Core = React.createClass({
+        run    : function() {
+            this.refs.timer.toggleTimer();
+        },
+        getTeam: function(i) { return this.refs['team'+i]; },
+        render : function() {
+            return (
+                <div>
+                    <TimeCounter ref="timer" />
+                    {teams.map(function(name, index){ return <Team teamName={name} teamNumber={index+1} ref={'team' + (index+1)} />})}
+                </div>);
+        }
+    });
+    ins.app = React.render(
+        <Core />, 
+        document.getElementById('game-container'));
+    
+});
+
+</script>
+
+</body>
+
+
+</html>
