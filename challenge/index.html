@@ -117,12 +117,25 @@
         componentWillReceiveProps: function() {},
         componentWillUnmount : function() {},
 
-        focus : function() { this.setState( { size : 2 } ); },
+        _handleClick : function() {
+            return App.insts.app.toogleTeam(this.props.teamNumber);
+        },
 
         render : function() {
+            var progress_max = 5,
+                progress = [],
+                team = this.props.teamNumber,
+                question = <div class="q_a"><div className="question">這是目前的問題.....</div><div className="answer"><input type="text" /></div></div>;; 
+
+            for ( var i = 0; i < progress_max ; ++i ) {
+                progress.push(<span className={"stage" + ( i < this.state.stage ? " done" : "")} key={"step-" + i}></span>);
+            }
+
             return (
-                <div className={`team team${this.props.teamNumber} size-${this.state.size}`}>
+
+                <div className={`team team${this.props.teamNumber} size-${this.state.size}`} onClick={this._handleClick}>
                     <div className="title">{`第${this.props.teamNumber}隊 - ${this.props.teamName}`}</div>
+                    <div className="meter">{progress}</div>
                 </div>
             );
         }
@@ -143,17 +156,35 @@ jQuery(function($){
     video.addEventListener('ended', function(e) { return videoContainer.classList.add('video-ended'); });
     videoContainer.addEventListener('click', function(e) { if (!this.classList.contains('end')) video.play(); });
     videoContainer.addEventListener('animationend', function(e) { ins.app.run(); });
-
+    videoContainer.addEventListener('webkitAnimationEnd', function(e) { ins.app.run(); });
+ 
     Core = React.createClass({
+        getInitialState : function() { this.currentTeam = 0; return { }; },
         run    : function() {
             this.refs.timer.toggleTimer();
         },
+        toogleTeam : function(team) {
+            if (this.currentTeam === team) {
+                this.refs['team'+team].setState({size : 1});
+                this.refs.timer.setState({size : 1});
+                this.currentTeam = 0;
+            } else if (this.currentTeam === 0) {
+                this.refs['team'+team].setState({size : 2});
+                this.refs.timer.setState({size : 2});
+                this.currentTeam = team;
+            } else {
+                this.refs['team'+this.currentTeam].setState({size : 1});
+                this.refs['team'+team].setState({size : 2});
+                this.currentTeam = team;
+            }
+        },
         getTeam: function(i) { return this.refs['team'+i]; },
         render : function() {
+
             return (
                 <div>
                     <TimeCounter ref="timer" />
-                    {teams.map(function(name, index){ return <Team teamName={name} teamNumber={index+1} ref={'team' + (index+1)} />})}
+                    {teams.map(function(name, index){ return <Team teamName={name} teamNumber={index+1} ref={'team' + (index+1)} key={'team' + (index+1)} />})}
                 </div>);
         }
     });
