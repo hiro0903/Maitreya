@@ -1,58 +1,67 @@
-var React = require('react');
-
+import React from 'react';
 var ClockBase = require('./clock-base.jsx');
 
 //main entry
-var Main = React.createClass({
+class Main extends React.Component { 
 
-  mixins: [],
+  constructor(props){
+      super(props);
+      this.state = {
+          time : props.config.timer,
+          currentTime : Date.now()
+      }
+  }
 
-  getDefaultProps: function () {
-      return {
-          timeLeft : 1000 * 60 * 60 * 2, //2hr
-      };
-  },
-
-  getInitialState: function () {
-
-
-      return {
-          timeLeft        : 1000 * 60 * 60 * 2, //2hr
-      };
-  },
-
-  childContextTypes: {
-      time      : React.PropTypes.number,
-  },
-
-  getChildContext: function() {
+  getChildContext() {
     return {
+        config : this.props.config
     };
-  },
+  }
 
-  componentWillMount: function() {
+  componentWillMount() {
 
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount() {
+      this.timer = window.setInterval(this._refreshTimer.bind(this), 100);
+  }
 
-  },
+  _toggleTimer() {
 
-  componentWillUpdate: function (nextProps, nextState) {
-  },
+  }
 
-  componentDidUpdate: function (prevProps, prevState) {
-  },
+  _refreshTimer() {
+      let prevTime = this.state.currentTime,
+          currTime = Date.now(),
+          diff = currTime - prevTime,
+          time = (this.state.time > diff) ? this.state.time - diff : 0;
+      this.setState({
+          currentTime : currTime,
+          time : time
+      });
+  }
 
-  render: function() {
+  render() {
     return (
       <main className="main">
         <div className="displayer">
-          <ClockBase />
+          <ClockBase time={this.state.time} />
         </div>
       </main>
     );
   }
-});
+}
+
+Main.propTypes = {
+    config : React.PropTypes.object
+};
+Main.defaultProps = {
+    config : {}
+};
+Main.mixins = [];
+Main.childContextTypes = {
+    time      : React.PropTypes.number,
+    config    : React.PropTypes.object
+};
 
 module.exports = Main;

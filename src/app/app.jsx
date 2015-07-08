@@ -1,19 +1,14 @@
 (function () {
-  var React = require('react/addons');
-  var injectTapEventPlugin = require('react-tap-event-plugin');
+  var React = require('react');
+  var ReactDom = require("react-dom");
+
+  var config = require('./config');
 
   //import custom views
   var Main = require('./components/main.jsx');
 
-
   //Needed for React Developer Tools
   window.React = React;
 
-  //Needed for onTouchTap
-  //Can go away when react 1.0 release
-  //Check this repo:
-  //https://github.com/zilverline/react-tap-event-plugin
-  injectTapEventPlugin();
-
-  window.Game = React.render(<Main />, document.body);
+  window.Game = ReactDom.render(<Main config={config} />, document.body);
 })();

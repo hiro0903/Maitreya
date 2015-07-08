@@ -1,42 +1,54 @@
-var React = require('react');
+import React from 'react';
 
-var ClockBase = React.createClass({
+export default class ClockBase extends React.Component {
+    constructor(props) {
+        super(props);
 
-  mixins: [],
+        this.state = this._getTimeObject(props.time);
+    }
 
-  getDefaultProps: function () {
-      return {
-          time_hr : '02',
-          time_min: '00',
-          time_sec: '00',
-          time_mm : '000'
-      };
-  },
+    _getTimeObject(time): object {
+        let hr, min, sec, mm;
 
-  componentWillMount: function() {
+        mm = time % 1000;
+        time = (time - mm) / 1000;
 
-  },
+        sec = time % 60;
+        time = (time - sec) / 60;
 
-  componentDidMount: function () {
+        min = time % 60;
+        time = (time - min) / 60;
+        
+        hr = time % 24;
 
-  },
+        return {
+            hr : hr,
+            min: min,
+            sec: sec,
+            mm : mm
+        };
+    }
 
-  componentWillUpdate: function (nextProps, nextState) {
-  },
+    _pad(number, n): string {
+        return (new Array( n + 1 ).join('0')  + number ).slice((n || 2) * -1);
+    }
 
-  componentDidUpdate: function (prevProps, prevState) {
-  },
+    componentWillReceiveProps (nextProps) {
+        this.setState(this._getTimeObject(nextProps.time));  
+    }
 
-  render: function() {
-    return (
-      <section className="clock-base">
-        <div className="time hr">02</div>
-        <div className="time min">05</div>
-        <div className="time sec">33</div>
-        <div className="time mm">325</div>
-      </section>
-    );
-  }
-});
+    render() {
 
-module.exports = ClockBase;
+      return (
+        <section className="clock-base">
+          <div className="time hr"> {this._pad(this.state.hr,  2)}</div>
+          <div className="time min">{this._pad(this.state.min, 2)}</div>
+          <div className="time sec">{this._pad(this.state.sec, 2)}</div>
+          <div className="time mm"> {this._pad(this.state.mm,  3)}</div>
+        </section>
+      );
+    }
+
+
+}
+
