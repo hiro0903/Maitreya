@@ -1,4 +1,5 @@
 import React from 'react';
+import ClockText from './clock-text.jsx';
 
 export default class ClockBase extends React.Component {
     constructor(props) {
@@ -34,18 +35,24 @@ export default class ClockBase extends React.Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        this.setState(this._getTimeObject(nextProps.time));  
+        this.setState(this._getTimeObject(nextProps.time));
     }
 
     render() {
-
+        var stop = this.props.stop;
       return (
-        <section className="clock-base">
+        <div className="clock-base">
+
           <div className="time hr"> {this._pad(this.state.hr,  2)}</div>
+          <div className="time spacer1">:</div>
           <div className="time min">{this._pad(this.state.min, 2)}</div>
+          <div className="time spacer2">:</div>
           <div className="time sec">{this._pad(this.state.sec, 2)}</div>
           <div className="time mm"> {this._pad(this.state.mm,  3)}</div>
-        </section>
+
+          <ClockText success={this.props.success} stop={stop} {...this.state} />
+
+        </div>
       );
     }
 
