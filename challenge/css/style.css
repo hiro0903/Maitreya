@@ -1,0 +1,63 @@
+@font-face {
+    font-family: digital;
+    src: url('../font/digital-mono.ttf');
+}
+
+@-webkit-keyframes clock-flash {
+    95%   { opacity: 0.7; }
+    98%   { opacity: 1.0; }
+    100%  { opacity: 0.7; }
+}
+
+@keyframes clock-flash {
+    95%   { opacity: 0.7; }
+    98%   { opacity: 1.0; }
+    100%  { opacity: 0.7; }
+}
+
+@-webkit-keyframes shut-down {
+    0%    { transform : scale(    1,    1); }
+    30%   { transform : scale(    1, 0.03); }
+    60%   { transform : scale(    1, 0.01); }
+    90%   { transform : scale( 0.01, 0.01); }
+    100%  { transform : scale(    0,    0); }  
+}
+
+@keyframes shut-down {
+    0%    { transform : scale(    1,    1); }
+    30%   { transform : scale(    1, 0.03); }
+    60%   { transform : scale(    1, 0.01); }
+    90%   { transform : scale( 0.01, 0.01); }
+    100%  { transform : scale(    0,    0); }
+}
+
+body { background-image: url('../img/bg01.jpg'); padding: 0; margin: 0; overflow: hidden; }
+
+#prelude { width: 100vw; height: 100vh; z-index: 100; overflow: hidden; background-color: #000; position: absolute;}
+#prelude video { width: 100%; }
+#prelude.video-ended { -webkit-animation: shut-down 0.5s ease-in forwards; animation: shut-down 0.5s ease-in forwards; }
+
+#game-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;}
+#game-container>div { position: relaitve; }
+
+    .counter { position: absolute; width: 30rem; height: 10rem; line-height: 10rem; left: calc(50% - 15rem); top: calc(50vh - 5rem); font-size: 5rem; font-family: digital; border: 1rem solid #FFF; transition: all 0.3s ease-in; }
+    .counter.running { -webkit-animation: clock-flash 1s infinite; animation: clock-flash 1s infinite; }
+    .counter .timer { color: #FFF; text-align: center; width: 100%; height: 100%; }
+    .counter.size-2 { width: 12rem; height: 3rem; left: calc(50% - 10rem); top: -0.5rem; font-size: 2rem; line-height: 3rem; border-width: 0.5rem; }
+
+    .team { width: 15rem; height: 2rem; background-color: rgba(255,255,255,0.3); border-color: #FFF; border-radius: 0.5rem; border-style: solid; line-height: 2rem; padding: 0 0.5rem; overflow: hidden; border-width: 2px 1px; position: absolute; box-sizing: border-box; transition: top 0.2s ease-in, left 0.3s ease-in 0.2s, width 0.2s ease-in 0.5s, height 0.2s ease-in 0.5s;}
+    .team .title { float: left; max-width: 8rem; height: 100%; font-size: 1em; color: #EEF; } 
+    .team .meter { float: right; width: 5rem; height: 2rem; text-align: right; padding: 3px 0; box-sizing: border-box;} 
+    .team .stage { width: 0.8rem; margin-left: 0.2rem; height: 100%; display: inline-block; border: 1px solid rgba(255, 255, 255, 0.5); box-sizing: border-box; }
+    .team .stage.done { background-color: rgba(0, 100, 0, 0.6); }
+
+    .team1 { top: 10vh; left: 1vw; }
+    .team2 { top: 30vh; left: 1vw; }
+    .team3 { top: 50vh; left: 1vw; }
+    .team4 { top: 70vh; left: 1vw; }
+    .team5 { top: 10vh; left: calc(99vw - 15rem); }
+    .team6 { top: 30vh; left: calc(99vw - 15rem);}
+    .team7 { top: 50vh; left: calc(99vw - 15rem); }
+    .team8 { top: 70vh; left: calc(99vw - 15rem); }
+
+    .team.size-2 { width: 80rem; left: calc(50vw - 40rem); top: 10vh; height: 80vh;}
