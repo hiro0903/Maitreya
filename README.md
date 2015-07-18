@@ -4,5 +4,7 @@ Maitreya
 (base on React)
 
 download files
+
 $ npm install
+
 $ npm start
